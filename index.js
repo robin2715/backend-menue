@@ -11,7 +11,7 @@ const mysql = require("mysql")
 
 app.use(express.json())
 app.options('*', (req, res) => {
-  const allowedOrigins = ['https://cristiansanchez2715.github.io/admin', 'https://cristiansanchez2715.github.io'];
+  const allowedOrigins = ['https://robin2715.github.io/admin', 'https://robin2715.github.io'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
@@ -26,7 +26,7 @@ app.use((req, res, next) => {
   console.log('Solicitud recibida:', req.method, req.url);
   console.log('Cuerpo de la solicitud:', req.body);
 
-  const allowedOrigins = ['https://cristiansanchez2715.github.io/admin', 'https://cristiansanchez2715.github.io'];
+  const allowedOrigins = ['https://robin2715.github.io/admin', 'https://robin2715.github.io'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.header("Access-Control-Allow-Origin", origin);
@@ -93,10 +93,10 @@ io.on("connection", (socket) => {
 // CONFIGURACIONES A LA BASE DE DATOS
 
 const connection = mysql.createConnection({
-'host': "b8d1amcp16oqfzl3peey-mysql.services.clever-cloud.com",
-'user': 'umhtwogrmnehnwne',
-'password': 'ljzTECX2TkwBUuY8yGoZ',
-'database': 'b8d1amcp16oqfzl3peey',
+'host': "bcxurofl7mlbgmuudmrg-mysql.services.clever-cloud.com",
+'user': 'uzq5bc0q4mklwyo9',
+'password': '6OOChzlLqKUH5pSTKQco',
+'database': 'bcxurofl7mlbgmuudmrg',
 'port': 3306
 })
 
