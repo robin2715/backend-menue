@@ -146,19 +146,17 @@ app.put('/cleanDataBase', (req, res) => {
 // METODO POST GUARDAR BASE DE DATOS
 
 app.post("/savePayOfDay", (req, res) => {
-  const { date,data, totalPay  } = req.body; // Asegúrate de obtener estos valores del cuerpo de la solicitud
+  const { date, data, totalPay } = req.body;
 
+  // Asegúrate de que 'data' sea una cadena JSON válida.
   const sql = 'INSERT INTO registro (date, data, totalPay) VALUES (?, ?, ?)';
-  connection.query(sql, [date, data, totalPay], (err, result) => {
+  connection.query(sql, [date, JSON.stringify(data), totalPay], (err, result) => {
     if (err) {
       console.error('Error al insertar datos en la tabla Pedidos:', err);
-      // Enviar mensaje de error al cliente a través del socket
-      // socket.emit('error', 'Error al insertar datos en la tabla Pedidos');
-      res.status(500).send('Error al insertar datos en la tabla Pedidos'); // Enviar respuesta de error al cliente
+      res.status(500).send('Error al insertar datos en la tabla Pedidos');
       return;
     }
 
-    // Si la inserción fue exitosa
-    res.status(201).send('Datos insertados correctamente'); // Responder con éxito
+    res.status(201).send('Datos insertados correctamente');
   });
 });
