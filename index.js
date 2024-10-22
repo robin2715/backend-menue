@@ -140,3 +140,25 @@ app.put('/cleanDataBase', (req, res) => {
     res.status(200).json({ message: "Pedidos eliminados correctamente" });
   });
 });
+
+
+
+// METODO POST GUARDAR BASE DE DATOS
+
+app.post("/savePayOfDay", (req, res) => {
+  const { date,data, totalPay  } = req.body; // Asegúrate de obtener estos valores del cuerpo de la solicitud
+
+  const sql = 'INSERT INTO registro (date, data, totalPay) VALUES (?, ?, ?)';
+  connection.query(sql, [date, data, totalPay], (err, result) => {
+    if (err) {
+      console.error('Error al insertar datos en la tabla Pedidos:', err);
+      // Enviar mensaje de error al cliente a través del socket
+      // socket.emit('error', 'Error al insertar datos en la tabla Pedidos');
+      res.status(500).send('Error al insertar datos en la tabla Pedidos'); // Enviar respuesta de error al cliente
+      return;
+    }
+
+    // Si la inserción fue exitosa
+    res.status(201).send('Datos insertados correctamente'); // Responder con éxito
+  });
+});
