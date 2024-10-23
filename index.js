@@ -160,3 +160,21 @@ app.post("/savePayOfDay", (req, res) => {
     res.status(201).send('Datos insertados correctamente');
   });
 });
+
+// envio registro al frontend
+
+
+app.get('/registroGet', (req, res) => {
+ 
+  // Enviador datos al frontend
+  const sql = 'SELECT date, data, totalPay FROM registro';
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al enviar datos al administrador', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+      return;
+    }
+    console.log('Datos enviados al administrador');
+    res.status(200).json(result);
+  });
+});
