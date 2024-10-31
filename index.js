@@ -88,6 +88,14 @@ io.on("connection", (socket) => {
       socket.emit('success', 'Datos insertados correctamente en la tabla Pedidos');
     });
   });
+
+  socket.on('mensajeChat', (mensaje) => {
+    console.log("Mensaje del chat:", mensaje);
+    // Emitir el mensaje a todos los clientes
+    io.emit('nuevoMensaje', mensaje);
+  });
+
+  
 });
 
 // CONFIGURACIONES A LA BASE DE DATOS
