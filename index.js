@@ -62,7 +62,7 @@ app.get("/", (req, res) => {
 
 
 io.on("connection", (socket) => {
-  console.log("Cliente conectado");
+  console.log("Cliente conectado:", socket.id);
 
   socket.on('nuevoPedido', (data) => {
     console.log("Nuevo pedido desde el cliente:", data);
