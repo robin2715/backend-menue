@@ -90,8 +90,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on('mensajeChat', (mensaje) => {
-    console.log("Mensaje del chat:", mensaje);
-    // Emitir el mensaje a todos los clientes
+    console.log("Mensaje del chat:", mensaje); // Verifica que este mensaje se muestre
     io.emit('nuevoMensaje', mensaje);
   });
 
