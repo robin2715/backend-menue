@@ -46,9 +46,18 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
+// const io = socketIO(server, {
+//   path: "/socket",
+//   cors: corsOptions,
+// });
+
 const io = socketIO(server, {
-  path: "/socket",
-  cors: corsOptions,
+  path: '/socket',
+  cors: {
+    origin: ['https://robin2715.github.io', 'https://robin2715.github.io/admin'],
+    methods: ['GET', 'POST'],
+    credentials: true,  // Permitir cookies y credenciales si es necesario
+  },
 });
 
 server.listen(port, () => {
