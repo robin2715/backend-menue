@@ -7,7 +7,7 @@ const socketIO = require("socket.io");
 const http = require("http");
 const server = http.createServer(app);
 const mysql = require("mysql")
-
+let mesas = {};  
 
 app.use(express.json())
 app.options('*', (req, res) => {
@@ -102,6 +102,36 @@ io.on("connection", (socket) => {
     console.log("Mensaje del chat:", mensaje); // Verifica que este mensaje se muestre
     io.emit('nuevoMensaje', mensaje);
   });
+
+
+  socket.on('unirse_mesa', (mesaId) => {
+    socket.join(mesaId);  // Unir el socket al room de la mesa
+    mesas[mesaId] = socket.id;  // Almacenar el socket para la mesa
+    console.log(`Mesa ${mesaId} unida con socket ID: ${socket.id}`);
+  });
+
+   // Cuando la mesa solicita un mesero
+   socket.on('solicitar_mesero', (mesaId) => {
+    console.log(`Mesa ${mesaId} ha solicitado un mesero`);
+
+    // Emitir mensaje a todos los administradores para habilitar el botón
+    io.emit('activar_boton_admin', mesaId);
+
+    // Emitir mensaje a la mesa específica para deshabilitar el botón
+    io.to(mesaId).emit('desactivar_boton_cliente', mesaId);
+  });
+
+  // Cuando la cocina responde que ha enviado el mesero
+  socket.on('enviar_mesero', (mesaId) => {
+    console.log(`Cocina/mesero ha enviado al mesero a la mesa ${mesaId}`);
+    
+    // Emitir mensaje a la mesa para habilitar el botón
+    io.to(mesaId).emit('activar_boton_cliente', mesaId);
+    
+    // Emitir mensaje a los administradores para deshabilitar el botón
+    io.emit('desactivar_boton_admin', mesaId);
+  });
+
 
   
 });
