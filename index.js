@@ -110,28 +110,26 @@ io.on("connection", (socket) => {
     console.log(`Mesa ${mesaId} unida con socket ID: ${socket.id}`);
   });
 
-   // Cuando la mesa solicita un mesero
-   socket.on('solicitar_mesero', (mesaId) => {
+  socket.on('solicitar_mesero', (mesaId) => {
     console.log(`Mesa ${mesaId} ha solicitado un mesero`);
-
+  
     // Emitir mensaje a todos los administradores para habilitar el botón
     io.emit('activar_boton_admin', mesaId);
-
+  
     // Emitir mensaje a la mesa específica para deshabilitar el botón
     io.to(mesaId).emit('desactivar_boton_cliente', mesaId);
   });
-
+  
   // Cuando la cocina responde que ha enviado el mesero
   socket.on('enviar_mesero', (mesaId) => {
     console.log(`Cocina/mesero ha enviado al mesero a la mesa ${mesaId}`);
-    
+  
     // Emitir mensaje a la mesa para habilitar el botón
     io.to(mesaId).emit('activar_boton_cliente', mesaId);
-    
+  
     // Emitir mensaje a los administradores para deshabilitar el botón
     io.emit('desactivar_boton_admin', mesaId);
   });
-
 
   
 });
