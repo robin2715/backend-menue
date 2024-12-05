@@ -6,7 +6,8 @@ const app = express();
 const socketIO = require("socket.io");
 const http = require("http");
 const server = http.createServer(app);
-const mysql = require("mysql")
+const mysql = require("mysql");
+const { table } = require("console");
 let mesas = {};  
 
 app.use(express.json())
@@ -117,7 +118,7 @@ io.on("connection", (socket) => {
     io.emit('activar_boton_admin', tableNumber);
   
     // Emitir mensaje a la mesa específica para deshabilitar el botón
-    io.to(mesaId).emit('desactivar_boton_cliente', tableNumber);
+    io.to(tableNumber).emit('desactivar_boton_cliente', tableNumber);
   });
   
   // Cuando la cocina responde que ha enviado el mesero
