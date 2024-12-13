@@ -104,49 +104,27 @@ io.on("connection", (socket) => {
     io.emit('nuevoMensaje', mensaje);
   });
 
-
-  // socket.on('unirse_mesa', (tableNumber) => {
-  //   socket.join(tableNumber);  // Unir el socket al room de la mesa
-  //   mesas[tableNumber] = socket.id;  // Almacenar el socket para la mesa
-  //   console.log(`Mesa ${tableNumber} unida con socket ID: ${socket.id}`);
-  // });
-
-  // socket.on('solicitar_mesero', (tableNumber) => {
-  //   console.log(`Mesa ${tableNumber} ha solicitado un mesero`);
-  
-  //   // Emitir mensaje a todos los administradores para habilitar el botón
-  //   io.emit('activar_boton_admin', tableNumber);
-  
-  //   // Emitir mensaje a la mesa específica para deshabilitar el botón
-  //   io.to(tableNumber).emit('desactivar_boton_cliente', tableNumber);
-  // });
-  
-  // // Cuando la cocina responde que ha enviado el mesero
-  // socket.on('enviar_mesero', (tableNumber) => {
-  //   console.log(`Cocina/mesero ha enviado al mesero a la mesa ${tableNumber}`);
-  
-  //   // Emitir mensaje a la mesa para habilitar el botón
-  //   io.to(tableNumber).emit('activar_boton_cliente', tableNumber);
-  
-  //   // Emitir mensaje a los administradores para deshabilitar el botón
-  //   io.emit('desactivar_boton_admin', tableNumber);
-  // });
-
-
  
   
     socket.on('unirse_mesa', (tableNumber) => {
       socket.join(tableNumber);
+      io.emit('enviar_mesa_admin', tableNumber)
     });
+
+    socket.on("enviar_mesa_admin", (tableNumber) => {
+      
+    })
   
     socket.on('solicitar_mesero', (tableNumber) => {
       io.to(tableNumber).emit('desactivar_boton_cliente');
-      io.emit('solicitar_mesero', tableNumber);
+      io.to(tableNumber).emit('solicitar_mesero', tableNumber);
     });
   
     socket.on('enviar_mesero', (tableNumber) => {
       io.to(tableNumber).emit('activar_boton_cliente');
-      io.emit('desactivar_boton_admin', tableNumber);
+      io.to(tableNumber).emit('desactivar_boton_admin', tableNumber);
+
+  io.to(tableNumber).emit('mesero_enviado', tableNumber); // Confirmar que el mesero fue enviado
     });
   });;
 
@@ -269,3 +247,34 @@ app.get('/registroGet', (req, res) => {
     res.status(200).json(result);
   });
 });
+
+
+
+  // socket.on('unirse_mesa', (tableNumber) => {
+  //   socket.join(tableNumber);  // Unir el socket al room de la mesa
+  //   mesas[tableNumber] = socket.id;  // Almacenar el socket para la mesa
+  //   console.log(`Mesa ${tableNumber} unida con socket ID: ${socket.id}`);
+  // });
+
+  // socket.on('solicitar_mesero', (tableNumber) => {
+  //   console.log(`Mesa ${tableNumber} ha solicitado un mesero`);
+  
+  //   // Emitir mensaje a todos los administradores para habilitar el botón
+  //   io.emit('activar_boton_admin', tableNumber);
+  
+  //   // Emitir mensaje a la mesa específica para deshabilitar el botón
+  //   io.to(tableNumber).emit('desactivar_boton_cliente', tableNumber);
+  // });
+  
+  // // Cuando la cocina responde que ha enviado el mesero
+  // socket.on('enviar_mesero', (tableNumber) => {
+  //   console.log(`Cocina/mesero ha enviado al mesero a la mesa ${tableNumber}`);
+  
+  //   // Emitir mensaje a la mesa para habilitar el botón
+  //   io.to(tableNumber).emit('activar_boton_cliente', tableNumber);
+  
+  //   // Emitir mensaje a los administradores para deshabilitar el botón
+  //   io.emit('desactivar_boton_admin', tableNumber);
+  // });
+
+
