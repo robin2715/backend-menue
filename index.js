@@ -111,13 +111,11 @@ io.on("connection", (socket) => {
       io.emit('enviar_mesa_admin', tableNumber)
     });
 
-    socket.on("enviar_mesa_admin", (tableNumber) => {
-      
-    })
+  
   
     socket.on('solicitar_mesero', (tableNumber) => {
       io.to(tableNumber).emit('desactivar_boton_cliente');
-      io.to(tableNumber).emit('solicitar_mesero', tableNumber);
+      io.emit('solicitar_mesero', tableNumber);
     });
   
     socket.on('enviar_mesero', (tableNumber) => {
