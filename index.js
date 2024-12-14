@@ -109,6 +109,7 @@ io.on("connection", (socket) => {
     socket.on('unirse_mesa', (tableNumber) => {
       socket.join(tableNumber);
       io.emit('enviar_mesa_admin', tableNumber)
+      console.log("SE HA UNIDO LA MESA NUMERO: " + tableNumber)
     });
 
   
@@ -116,6 +117,8 @@ io.on("connection", (socket) => {
     socket.on('solicitar_mesero', (tableNumber) => {
       io.to(tableNumber).emit('desactivar_boton_cliente');
       io.emit('solicitar_mesero', tableNumber);
+      console.log("EL CLIENTE DE LA MESA " + tableNumber + " SU BOTON DEBE ESTAR DESACTIVADO Y EN EL ADMIN DEBE ESTAR ACTIVADO")
+    
     });
   
     socket.on('enviar_mesero', (tableNumber) => {
@@ -123,7 +126,8 @@ io.on("connection", (socket) => {
       io.to(tableNumber).emit('desactivar_boton_admin', tableNumber);
 
   io.to(tableNumber).emit('mesero_enviado', tableNumber); // Confirmar que el mesero fue enviado
-    });
+console.log("SE HA ENVIADO UN MESERO A LA MESA " + tableNumber + " EL BOTON EN EL ADMIN DEBE DESACIVARSE Y EN EL CLIENTE ACTIVARSE")    
+});
   });;
 
 // CONFIGURACIONES A LA BASE DE DATOS
