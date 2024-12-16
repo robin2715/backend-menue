@@ -120,6 +120,11 @@ io.on("connection", (socket) => {
       console.log("EL CLIENTE DE LA MESA " + tableNumber + " SU BOTON DEBE ESTAR DESACTIVADO Y EN EL ADMIN DEBE ESTAR ACTIVADO")
     
     });
+
+    socket.on("disconnect", (tableNumber) => {
+io.emit("cliente_desconectado", tableNumber)
+
+    }) 
   
     socket.on('enviar_mesero', (tableNumber) => {
       io.to(tableNumber).emit('activar_boton_cliente');
