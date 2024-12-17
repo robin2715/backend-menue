@@ -107,6 +107,7 @@ io.on("connection", (socket) => {
  
   
     socket.on('unirse_mesa', (tableNumber) => {
+      socket.tableNumber = tableNumber
       socket.join(tableNumber);
       io.emit('enviar_mesa_admin', tableNumber)
       console.log("SE HA UNIDO LA MESA NUMERO: " + tableNumber)
@@ -122,7 +123,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", (tableNumber) => {
-io.emit("cliente_desconectado", tableNumber)
+io.emit("cliente_desconectado", socket.tableNumber)
 
     }) 
   
