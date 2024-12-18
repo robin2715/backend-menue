@@ -123,6 +123,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", (tableNumber) => {
+      socket.tableNumber = tableNumber
 io.emit("cliente_desconectado", socket.tableNumber)
 
     }) 
