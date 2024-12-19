@@ -73,7 +73,6 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("Cliente conectado:", socket.id);
-
   socket.on('nuevoPedido', (data) => {
     console.log("Nuevo pedido desde el cliente:", data);
     // Aquí puedes procesar el pedido y enviarlo a la cocina, guardar en una base de datos, etc.
@@ -122,8 +121,9 @@ io.on("connection", (socket) => {
     
     });
 
-    socket.on("disconnect", (tableNumber) => {
-      socket.tableNumber = tableNumber
+    socket.on("custom_disconnect", (tableNumber) => {
+      console.log('Conectado, tableNumber recibido:', tableNumber);
+     socket.tableNumber = tableNumber
 io.emit("cliente_desconectado", socket.tableNumber)
 
     }) 
