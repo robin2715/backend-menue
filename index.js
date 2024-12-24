@@ -104,8 +104,9 @@ io.on("connection", (socket) => {
     io.emit('nuevoMensaje', mensaje);
   });
 
- 
-  
+ let mesasConectadas = new Map()
+ let clientTimeouts = new Map(); 
+
     socket.on('unirse_mesa', (tableNumber) => {
       socket.tableNumber = tableNumber
       mesasConectadas.set(socket.id, tableNumber);
@@ -123,6 +124,31 @@ io.on("connection", (socket) => {
     
     });
 
+
+    const stopPingPong = (socket) => {
+      try {
+        console.log(`Deteniendo el sistema de Ping-Pong para el cliente ${socket.id}`);
+    
+        // Limpiar el intervalo de envío de ping
+        if (pingInterval) {
+          clearInterval(pingInterval);
+          pingInterval = null;
+        }
+    
+        // Limpiar el timeout que espera el pong
+        if (pongTimeout) {
+          clearTimeout(pongTimeout);
+          pongTimeout = null;
+        }
+    
+        // Desconectar el cliente si es necesario (opcional)
+        socket.disconnect(); // Desconectar al cliente si se desea
+        console.log(`Cliente ${socket.id} desconectado y el ping-pong detenido.`);
+      } catch (error) {
+        console.error('Error al detener el sistema de Ping-Pong: ', error);
+      }
+    };
+
     socket.on("custom_disconnect", (tableNumber) => {
       console.log('Conectado, tableNumber recibido:', tableNumber);
      socket.tableNumber = tableNumber
@@ -134,25 +160,31 @@ io.emit("cliente_desconectado", socket.tableNumber)
 
 
 
-
     socket.on('ping', (data) => {
       try {
-        // Si el servidor recibe un ping, emitimos un pong solo al cliente correspondiente
         console.log(`Ping recibido del cliente ${socket.id}, mesa: ${socket.tableNumber}`);
         socket.to(socket.id).emit('pong', { tableNumber: socket.tableNumber });  // Emite el pong solo al cliente de esa mesa
-  
+    
         // Si el cliente estaba en un estado de timeout (desconectado), reiniciamos el temporizador
-        if (clientTimeouts[socket.id]) {
-          clearTimeout(clientTimeouts[socket.id]);  // Limpiar el timeout anterior
+        if (clientTimeouts.has(socket.id)) {
+          clearTimeout(clientTimeouts.get(socket.id));  // Limpiar el timeout anterior
+          clientTimeouts.delete(socket.id);  // Eliminar el timeout del cliente
         }
-  
-        // Establecer un nuevo timeout para el cliente, 15 segundos sin ping y se considera desconectado
-        clientTimeouts[socket.id] = setTimeout(() => {
+    
+        // Establecer un nuevo timeout para el cliente, 15 segundos sin pong y se considera desconectado
+        clientTimeouts.set(socket.id, setTimeout(() => {
           console.log(`Cliente desconectado: ${socket.id}, mesa: ${socket.tableNumber}`);
-          socket.emit('cliente_desconectado',  socket.tableNumber );  // Emitir evento de desconexión
+    
+          // Eliminar la mesa del Map de mesas conectadas
+          mesasConectadas.delete(socket.id);
+    
+          // Emitir evento de desconexión
+          socket.emit('cliente_desconectado', { tableNumber: socket.tableNumber });
+          io.emit("cliente_desconectado", socket.tableNumber);  // Emitir evento a todos los demás
+    
           socket.disconnect();  // Desconectar al cliente
-        }, 15000);  // Esperar 15 segundos sin recibir ping para desconectar al cliente
-  
+        }, 15000));  // Esperar 15 segundos sin recibir pong para desconectar al cliente
+    
       } catch (error) {
         console.error('Error al recibir el ping del cliente: ', error);
       }
