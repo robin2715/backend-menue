@@ -1,0 +1,63 @@
+¡Tienes razón! Si ya estás manejando la desconexión de los clientes (mesas) con el evento custom_disconnect, no es necesario manejar la desconexión con el evento disconnect directamente. El evento disconnect es un evento que se dispara cuando la conexión del WebSocket se pierde, pero en este caso estás gestionando las desconexiones de manera explícita con custom_disconnect.
+
+¿Por qué no usar el evento disconnect?
+El evento disconnect se dispara cuando una conexión WebSocket se pierde inesperadamente, por ejemplo, si el usuario cierra el navegador de manera abrupta o pierde la conexión de red. Pero en tu implementación, cuando un cliente (mesa) decide desconectarse de forma controlada (por ejemplo, cuando el navegador se cierra o cuando se emite un evento custom_disconnect), ya estás gestionando esa desconexión de manera explícita.
+
+Solución:
+Si ya tienes la lógica para desconectar al cliente utilizando el evento custom_disconnect, puedes omitir el evento disconnect. Aquí te muestro cómo puedes ajustar el código:
+
+javascript
+Copiar código
+// Servidor (Backend)
+const io = require('socket.io')(server);
+
+const clients = {};  // Objeto para almacenar la última respuesta "pong" de cada mesa
+
+io.on('connection', (socket) => {
+  let tableNumber = socket.handshake.query.tableNumber;
+  console.log(`Mesa ${tableNumber} conectada`);
+
+  clients[tableNumber] = { lastPong: Date.now() };
+
+  const pingInterval = setInterval(() => {
+    socket.emit('ping');
+    console.log(`Ping enviado a mesa ${tableNumber}`);
+
+    setTimeout(() => {
+      if (Date.now() - clients[tableNumber].lastPong > 10000) {  // Si no se recibe pong en 10 segundos
+        console.log(`Mesa ${tableNumber} desconectada por inactividad`);
+        io.emit('cliente_desconectado', tableNumber);  // Notificar al admin
+        socket.disconnect(); // Desconectar al cliente
+      }
+    }, 10000);
+  }, 30000);
+
+  // Recibir pong del cliente (mesa)
+  socket.on('pong', () => {
+    console.log(`Pong recibido de mesa ${tableNumber}`);
+    clients[tableNumber].lastPong = Date.now();
+  });
+
+  // Manejo de desconexión controlada con custom_disconnect
+  socket.on('custom_disconnect', (tableNumber) => {
+    console.log(`Mesa ${tableNumber} desconectada abruptamente`);
+    io.emit('cliente_desconectado', tableNumber);
+    clearInterval(pingInterval);  // Limpiar el intervalo de ping
+    delete clients[tableNumber];  // Eliminar la mesa de la lista de clientes activos
+    socket.disconnect();  // Desconectar la sesión
+  });
+});
+Lo que se cambia:
+Eliminar el manejo del evento disconnect: Como ya estás manejando la desconexión con el evento custom_disconnect, no necesitas manejarlo a través del evento disconnect de WebSocket. El evento disconnect es más general y se dispararía automáticamente si la conexión se pierde sin el control explícito de tu parte.
+
+Limpiar el intervalo de ping y eliminar la mesa: Cuando se emite custom_disconnect, limpiamos el intervalo de ping y eliminamos la mesa del registro de clientes. Además, emitimos el evento cliente_desconectado para notificar a los administradores o a otros componentes sobre la desconexión.
+
+¿Por qué esto funciona?
+Control manual de desconexiones: Usamos custom_disconnect para tener un control más preciso sobre la desconexión, evitando depender de los eventos automáticos de WebSocket como disconnect, que pueden ocurrir en situaciones no previstas (por ejemplo, desconexión por pérdida de conexión o cierre abrupto del navegador).
+
+Desconexión explícita: Con custom_disconnect, puedes manejar la desconexión de manera controlada, garantizando que cuando una mesa se desconecta, el servidor actualice correctamente el estado y emita el evento correspondiente para notificar a otros sistemas.
+
+En resumen, si ya estás usando custom_disconnect para manejar la desconexión, no necesitas el evento disconnect en tu código, y lo mejor es eliminarlo para mantener el flujo más limpio y directo.
+
+
+

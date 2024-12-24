@@ -70,6 +70,7 @@ app.get("/", (req, res) => {
 });
 
 
+const mesasConectadas = new Map();
 
 io.on("connection", (socket) => {
   console.log("Cliente conectado:", socket.id);
@@ -107,6 +108,7 @@ io.on("connection", (socket) => {
   
     socket.on('unirse_mesa', (tableNumber) => {
       socket.tableNumber = tableNumber
+      mesasConectadas.set(socket.id, tableNumber);
       socket.join(tableNumber);
       io.emit('enviar_mesa_admin', tableNumber)
       console.log("SE HA UNIDO LA MESA NUMERO: " + tableNumber)
@@ -124,10 +126,71 @@ io.on("connection", (socket) => {
     socket.on("custom_disconnect", (tableNumber) => {
       console.log('Conectado, tableNumber recibido:', tableNumber);
      socket.tableNumber = tableNumber
+     stopPingPong();
+     mesasConectadas.delete(socket.id);
 io.emit("cliente_desconectado", socket.tableNumber)
 
     }) 
+
+    // LOGICA PING PONG EXPERIMENTAL 
+    let pingInterval;
+    let pongTimeout;
   
+    // Función para iniciar el sistema ping-pong
+    const startPingPong = () => {
+      // Enviar un ping cada 10 segundos
+      pingInterval = setInterval(() => {
+        if (socket.connected) {
+          console.log(`Enviando ping al cliente ${socket.id}`);
+          socket.emit('ping', { tableNumber: socket.tableNumber });
+  
+          // Establecer un timeout para esperar el pong
+          pongTimeout = setTimeout(() => {
+            console.log(`No se recibió pong del cliente ${socket.id}, consideramos desconectado.`);
+            mesasConectadas.delete(socket.id); 
+            socket.emit('custom_disconnect', socket.tableNumber); // Emitir desconexión
+         
+            stopPingPong();
+  
+            // Eliminar del mapa de conexiones activas
+            
+  
+            // Emitir evento de desconexión con el tableNumber
+           }, 5000); // 5 segundos para esperar el pong
+        }
+      }, 10000); // Enviar ping cada 10 segundos
+    };
+  
+    // Función para detener el sistema Ping-Pong
+    const stopPingPong = () => {
+      if (pingInterval) {
+        clearInterval(pingInterval);
+        pingInterval = null;
+      }
+      if (pongTimeout) {
+        clearTimeout(pongTimeout);
+        pongTimeout = null;
+      }
+    };
+  
+    // Iniciar el ping-pong cuando el cliente se conecta
+    startPingPong();
+  
+    // Escuchar el pong del cliente
+    socket.on('pong', (data) => {
+      console.log(`Pong recibido del cliente ${socket.id}`);
+      
+      // Si se recibe el pong, cancelar el timeout del servidor y continuar con el siguiente ciclo
+      clearTimeout(pongTimeout);
+      pongTimeout = null; // Reiniciar el timeout
+  
+      // Iniciar el ping nuevamente después de 10 segundos
+      startPingPong(); // Reiniciar el ciclo de ping
+    });
+  
+    // -----------------------------------
+
+
     socket.on('enviar_mesero', (tableNumber) => {
       // io.to(tableNumber).emit('activar_boton_cliente');
       // io.emit('desactivar_boton_admin', tableNumber);
