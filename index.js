@@ -285,6 +285,34 @@ app.delete("/deleteOneDate", (req, res) => {
 });
 
 
+app.delete("/deleteOneRegister", (req, res) => {
+  // Asegurarse de que el id esté en el cuerpo de la solicitud
+  const dateId = req.body.id; 
+  
+  if (!dateId) {
+    return res.status(400).json({ error: "ID no proporcionado" });
+  }
+
+  // Consulta SQL para eliminar el registro con el id proporcionado en la tabla 'pedidos'
+  const sql = 'DELETE FROM registro WHERE id = ?';
+
+  connection.query(sql, [dateId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el registro', err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+    
+    // Si no se encontró ningún registro con ese ID, devolver un mensaje
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'No se encontró el registro con ese ID' });
+    }
+
+    console.log('Registro eliminado');
+    res.status(200).json({ message: 'Registro eliminado correctamente', result });
+  });
+});
+
+
 
 
 // METODO POST GUARDAR BASE DE DATOS
