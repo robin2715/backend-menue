@@ -339,7 +339,7 @@ app.post("/savePayOfDay", (req, res) => {
 app.get('/registroGet', (req, res) => {
  
   // Enviador datos al frontend
-  const sql = 'SELECT date, data, totalPay FROM registro';
+  const sql = 'SELECT id, date, data, totalPay FROM registro';
   connection.query(sql, (err, result) => {
     if (err) {
       console.error('Error al enviar datos al administrador', err);
