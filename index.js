@@ -198,7 +198,7 @@ io.emit("cliente_desconectado", socket.tableNumber)
       // io.to(tableNumber).emit('activar_boton_cliente');
       // io.emit('desactivar_boton_admin', tableNumber);
 
-  io.emit('mesero_enviado', tableNumber); // Confirmar que el mesero fue enviado
+  io.to(tableNumber).emit('mesero_enviado', tableNumber); // Confirmar que el mesero fue enviado
 console.log("SE HA ENVIADO UN MESERO A LA MESA " + tableNumber + " EL BOTON EN EL ADMIN DEBE DESACIVARSE Y EN EL CLIENTE ACTIVARSE")    
 });
   });;
