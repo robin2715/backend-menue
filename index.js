@@ -137,7 +137,7 @@ io.on("connection", (socket) => {
     
         // Desconectar al cliente
         // socket.disconnect();
-      }, 15000)); // 15 segundos sin recibir un pong (inactividad)
+      }, 65000)); // 15 segundos sin recibir un pong (inactividad)
     };
 
   
