@@ -205,21 +205,32 @@ console.log("SE HA ENVIADO UN MESERO A LA MESA " + tableNumber + " EL BOTON EN E
 
 // CONFIGURACIONES A LA BASE DE DATOS
 
-const connection = mysql.createConnection({
+// const connection = mysql.createConnection({
+//   host: "bcxurofl7mlbgmuudmrg-mysql.services.clever-cloud.com",
+//   user: "uzq5bc0q4mklwyo9",
+//   password: "6OOChzlLqKUH5pSTKQco",
+//   database: "bcxurofl7mlbgmuudmrg",
+//   port: 3306
+// });
+
+const connection = mysql.createPool({
   host: "bcxurofl7mlbgmuudmrg-mysql.services.clever-cloud.com",
   user: "uzq5bc0q4mklwyo9",
   password: "6OOChzlLqKUH5pSTKQco",
   database: "bcxurofl7mlbgmuudmrg",
-  port: 3306
+  port: 3306,
+  waitForConnections: true,
+  connectionLimit: 10, // Número de conexiones en el pool
+  queueLimit: 0
 });
 
-connection.connect((err) => {
-  if (err) {
-    console.error("Error de conexión a la base de datos:", err);
-  } else {
-    console.log("Conexión a la base de datos establecida");
-  }
-});
+// connection.connect((err) => {
+//   if (err) {
+//     console.error("Error de conexión a la base de datos:", err);
+//   } else {
+//     console.log("Conexión a la base de datos establecida");
+//   }
+// });
 
 // enviar pedidos al admin
 
