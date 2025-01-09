@@ -172,7 +172,7 @@ io.on("connection", (socket) => {
      stopPingPong(socket);
      clientTimeouts.delete(socket.id); 
      mesasConectadas.delete(socket.id);
-io.emit("cliente_desconectado", socket.tableNumber)
+io.to(socket.tableNumber).emit("cliente_desconectado", socket.tableNumber)
 
     }) 
 
