@@ -8,8 +8,16 @@ const http = require("http");
 const server = http.createServer(app);
 const mysql = require("mysql");
 const { table } = require("console");
+const multer = require("multer")
+const storage = multer.diskStorage({
+  filename: (req, file, cb) => {
+    cb(null, file.originalname)
+  }
+})
 let mesas = {};  
+const fs = require("node:fs")
 
+app.use(multer({storage: storage, dest: path.join(__dirname, "./public/images")}).single("image"))
 app.use(express.json())
 app.options('*', (req, res) => {
   const allowedOrigins = ['https://robin2715.github.io/admin', 'https://robin2715.github.io'];
@@ -137,7 +145,7 @@ io.on("connection", (socket) => {
     
         // Desconectar al cliente
         // socket.disconnect();
-      }, 25000)); // 15 segundos sin recibir un pong (inactividad)
+      }, 61000)); // 15 segundos sin recibir un pong (inactividad)
     };
 
   
@@ -363,6 +371,114 @@ app.get('/registroGet', (req, res) => {
 });
 
 
+// ACTUALIZACIONES VERSION 2.0
+
+// DESCARGAR MENU
+
+app.get('/foodGet', (req, res) => {
+ 
+  // Enviador datos al frontend
+  const sql = 'SELECT id, ingredients, name, kcal, image FROM food';
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al enviar datos al administrador', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+      return;
+    }
+    console.log('Carta de comida enviada al administrador');
+    res.status(200).json(result);
+  });
+});
+
+
+
+app.get('/drinkGet', (req, res) => {
+ 
+  // Enviador datos al frontend
+  const sql = 'SELECT id, name, ingredients, kcal, image FROM drink';
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al enviar datos al administrador', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+      return;
+    }
+    console.log('Carta de comida enviada al administrador');
+    res.status(200).json(result);
+  });
+});
+
+
+
+app.get('/dessertGet', (req, res) => {
+ 
+  // Enviador datos al frontend
+  const sql = 'SELECT id, name, ingredients, kcal, image FROM dessert';
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error al enviar datos al administrador', err);
+      res.status(500).json({ error: 'Error interno del servidor' });
+      return;
+    }
+    console.log('Carta de comida enviada al administrador');
+    res.status(200).json(result);
+  });
+});
+
+// AÑADIR PRODUCTO AL MENU
+
+app.post("/sendFood", (req, res) => {
+  const { name, kcal, ingredients, } = req.body;
+  const  {image} = req.file
+   const imagenName = image.originalname
+
+  // Asegúrate de que 'data' sea una cadena JSON válida.
+  const sql = 'INSERT INTO food (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
+  connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
+    if (err) {
+      console.error('Error al insertar datos en la tabla food:', err);
+      res.status(500).send('Error al insertar datos en la tabla food');
+      return;
+    }
+
+    res.status(201).send('Datos insertados correctamente');
+  });
+});
+
+
+app.post("/sendDrink", (req, res) => {
+  const { name, kcal, ingredients} = req.body;
+  const  {image} = req.file
+   const imagenName = image.originalname
+
+  // Asegúrate de que 'data' sea una cadena JSON válida.
+  const sql = 'INSERT INTO drink (name, kcal, ingredients, image) VALUES (?, ?, ?, ?)';
+  connection.query(sql, [name, kcal, ingredients, image], (err, result) => {
+    if (err) {
+      console.error('Error al insertar datos en la tabla drink:', err);
+      res.status(500).send('Error al insertar datos en la tabla drink');
+      return;
+    }
+
+    res.status(201).send('Datos insertados correctamente');
+  });
+});
+
+
+app.post("/sendDessert", (req, res) => {
+  const { name, kcal, ingredients, image } = req.body;
+
+  // Asegúrate de que 'data' sea una cadena JSON válida.
+  const sql = 'INSERT INTO dessert (name, kcal, ingredients, image) VALUES (?, ?, ?, ?)';
+  connection.query(sql, [name, kcal, ingredients, image], (err, result) => {
+    if (err) {
+      console.error('Error al insertar datos en la tabla dessert:', err);
+      res.status(500).send('Error al insertar datos en la tabla dessert');
+      return;
+    }
+
+    res.status(201).send('Datos insertados correctamente');
+  });
+});
 
   // socket.on('unirse_mesa', (tableNumber) => {
   //   socket.join(tableNumber);  // Unir el socket al room de la mesa
