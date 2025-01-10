@@ -9,6 +9,7 @@ const server = http.createServer(app);
 const mysql = require("mysql");
 const { table } = require("console");
 const multer = require("multer")
+const path = require("path")
 const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(null, file.originalname)
