@@ -451,8 +451,8 @@ app.post("/sendDrink", (req, res) => {
    const imagenName = image.originalname
 
   // Asegúrate de que 'data' sea una cadena JSON válida.
-  const sql = 'INSERT INTO drink (name, kcal, ingredients, image) VALUES (?, ?, ?, ?)';
-  connection.query(sql, [name, kcal, ingredients, image], (err, result) => {
+  const sql = 'INSERT INTO drink (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
+  connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
     if (err) {
       console.error('Error al insertar datos en la tabla drink:', err);
       res.status(500).send('Error al insertar datos en la tabla drink');
@@ -465,11 +465,12 @@ app.post("/sendDrink", (req, res) => {
 
 
 app.post("/sendDessert", (req, res) => {
-  const { name, kcal, ingredients, image } = req.body;
-
+  const { name, kcal, ingredients } = req.body;
+  const  {image} = req.file
+  const imagenName = image.originalname
   // Asegúrate de que 'data' sea una cadena JSON válida.
-  const sql = 'INSERT INTO dessert (name, kcal, ingredients, image) VALUES (?, ?, ?, ?)';
-  connection.query(sql, [name, kcal, ingredients, image], (err, result) => {
+  const sql = 'INSERT INTO dessert (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
+  connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
     if (err) {
       console.error('Error al insertar datos en la tabla dessert:', err);
       res.status(500).send('Error al insertar datos en la tabla dessert');
