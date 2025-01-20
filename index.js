@@ -376,111 +376,111 @@ app.get('/registroGet', (req, res) => {
 
 // DESCARGAR MENU
 
-app.get('/foodGet', (req, res) => {
+// app.get('/foodGet', (req, res) => {
  
-  // Enviador datos al frontend
-  const sql = 'SELECT id, ingredients, name, kcal, image FROM food';
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.error('Error al enviar datos al administrador', err);
-      res.status(500).json({ error: 'Error interno del servidor' });
-      return;
-    }
-    console.log('Carta de comida enviada al administrador');
-    res.status(200).json(result);
-  });
-});
+//   // Enviador datos al frontend
+//   const sql = 'SELECT id, ingredients, name, kcal, image FROM food';
+//   connection.query(sql, (err, result) => {
+//     if (err) {
+//       console.error('Error al enviar datos al administrador', err);
+//       res.status(500).json({ error: 'Error interno del servidor' });
+//       return;
+//     }
+//     console.log('Carta de comida enviada al administrador');
+//     res.status(200).json(result);
+//   });
+// });
 
 
 
-app.get('/drinkGet', (req, res) => {
+// app.get('/drinkGet', (req, res) => {
  
-  // Enviador datos al frontend
-  const sql = 'SELECT id, name, ingredients, kcal, image FROM drink';
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.error('Error al enviar datos al administrador', err);
-      res.status(500).json({ error: 'Error interno del servidor' });
-      return;
-    }
-    console.log('Carta de comida enviada al administrador');
-    res.status(200).json(result);
-  });
-});
+//   // Enviador datos al frontend
+//   const sql = 'SELECT id, name, ingredients, kcal, image FROM drink';
+//   connection.query(sql, (err, result) => {
+//     if (err) {
+//       console.error('Error al enviar datos al administrador', err);
+//       res.status(500).json({ error: 'Error interno del servidor' });
+//       return;
+//     }
+//     console.log('Carta de comida enviada al administrador');
+//     res.status(200).json(result);
+//   });
+// });
 
 
 
-app.get('/dessertGet', (req, res) => {
+// app.get('/dessertGet', (req, res) => {
  
-  // Enviador datos al frontend
-  const sql = 'SELECT id, name, ingredients, kcal, image FROM dessert';
-  connection.query(sql, (err, result) => {
-    if (err) {
-      console.error('Error al enviar datos al administrador', err);
-      res.status(500).json({ error: 'Error interno del servidor' });
-      return;
-    }
-    console.log('Carta de comida enviada al administrador');
-    res.status(200).json(result);
-  });
-});
+//   // Enviador datos al frontend
+//   const sql = 'SELECT id, name, ingredients, kcal, image FROM dessert';
+//   connection.query(sql, (err, result) => {
+//     if (err) {
+//       console.error('Error al enviar datos al administrador', err);
+//       res.status(500).json({ error: 'Error interno del servidor' });
+//       return;
+//     }
+//     console.log('Carta de comida enviada al administrador');
+//     res.status(200).json(result);
+//   });
+// });
 
-// AÑADIR PRODUCTO AL MENU
+// // AÑADIR PRODUCTO AL MENU
 
-app.post("/sendFood", (req, res) => {
-  const { name, kcal, ingredients, } = req.body;
-  const  {image} = req.file
-   const imagenName = image.originalname
+// app.post("/sendFood", (req, res) => {
+//   const { name, kcal, ingredients, } = req.body;
+//   const  {image} = req.file
+//    const imagenName = image.originalname
 
-  // Asegúrate de que 'data' sea una cadena JSON válida.
-  const sql = 'INSERT INTO food (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
-  connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
-    if (err) {
-      console.error('Error al insertar datos en la tabla food:', err);
-      res.status(500).send('Error al insertar datos en la tabla food');
-      return;
-    }
+//   // Asegúrate de que 'data' sea una cadena JSON válida.
+//   const sql = 'INSERT INTO food (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
+//   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
+//     if (err) {
+//       console.error('Error al insertar datos en la tabla food:', err);
+//       res.status(500).send('Error al insertar datos en la tabla food');
+//       return;
+//     }
 
-    res.status(201).send('Datos insertados correctamente');
-  });
-});
-
-
-app.post("/sendDrink", (req, res) => {
-  const { name, kcal, ingredients} = req.body;
-  const  {image} = req.file
-   const imagenName = image.originalname
-
-  // Asegúrate de que 'data' sea una cadena JSON válida.
-  const sql = 'INSERT INTO drink (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
-  connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
-    if (err) {
-      console.error('Error al insertar datos en la tabla drink:', err);
-      res.status(500).send('Error al insertar datos en la tabla drink');
-      return;
-    }
-
-    res.status(201).send('Datos insertados correctamente');
-  });
-});
+//     res.status(201).send('Datos insertados correctamente');
+//   });
+// });
 
 
-app.post("/sendDessert", (req, res) => {
-  const { name, kcal, ingredients } = req.body;
-  const  {image} = req.file
-  const imagenName = image.originalname
-  // Asegúrate de que 'data' sea una cadena JSON válida.
-  const sql = 'INSERT INTO dessert (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
-  connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
-    if (err) {
-      console.error('Error al insertar datos en la tabla dessert:', err);
-      res.status(500).send('Error al insertar datos en la tabla dessert');
-      return;
-    }
+// app.post("/sendDrink", (req, res) => {
+//   const { name, kcal, ingredients} = req.body;
+//   const  {image} = req.file
+//    const imagenName = image.originalname
 
-    res.status(201).send('Datos insertados correctamente');
-  });
-});
+//   // Asegúrate de que 'data' sea una cadena JSON válida.
+//   const sql = 'INSERT INTO drink (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
+//   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
+//     if (err) {
+//       console.error('Error al insertar datos en la tabla drink:', err);
+//       res.status(500).send('Error al insertar datos en la tabla drink');
+//       return;
+//     }
+
+//     res.status(201).send('Datos insertados correctamente');
+//   });
+// });
+
+
+// app.post("/sendDessert", (req, res) => {
+//   const { name, kcal, ingredients } = req.body;
+//   const  {image} = req.file
+//   const imagenName = image.originalname
+//   // Asegúrate de que 'data' sea una cadena JSON válida.
+//   const sql = 'INSERT INTO dessert (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
+//   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
+//     if (err) {
+//       console.error('Error al insertar datos en la tabla dessert:', err);
+//       res.status(500).send('Error al insertar datos en la tabla dessert');
+//       return;
+//     }
+
+//     res.status(201).send('Datos insertados correctamente');
+//   });
+// });
 
   // socket.on('unirse_mesa', (tableNumber) => {
   //   socket.join(tableNumber);  // Unir el socket al room de la mesa
