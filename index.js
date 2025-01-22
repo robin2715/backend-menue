@@ -229,7 +229,7 @@ const connection = mysql.createPool({
   database: "bcxurofl7mlbgmuudmrg",
   port: 3306,
   waitForConnections: true,
-  connectionLimit: 10, // Número de conexiones en el pool
+  connectionLimit: 5, // Número de conexiones en el pool
   queueLimit: 0
 });
 
