@@ -379,6 +379,7 @@ app.get('/registroGet', (req, res) => {
 app.get('/foodGet', (req, res) => {
  
   // Enviador datos al frontend
+  console.log('Solicitud GET recibida en /foodGet');
   const sql = 'SELECT id, ingredients, name, kcal, image FROM food';
   connection.query(sql, (err, result) => {
     if (err) {
