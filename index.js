@@ -433,6 +433,8 @@ app.get('/dessertGet', (req, res) => {
 // AÑADIR PRODUCTO AL MENU
 app.post("/sendFood", upload, (req, res) => {
   const { name, kcal, ingredients } = req.body;
+  console.log('Archivo recibido:', req.file); // Aquí se imprimirá el archivo subido
+  console.log('Datos del formulario:', req.body);
 
   if (!req.file) {
     return res.status(400).send('No se ha enviado ninguna imagen.');
