@@ -431,27 +431,26 @@ app.get('/dessertGet', (req, res) => {
 });
 
 // AÑADIR PRODUCTO AL MENU
-
 app.post("/sendFood", upload, (req, res) => {
   const { name, kcal, ingredients } = req.body;
-  
+
   if (!req.file) {
     return res.status(400).send('No se ha enviado ninguna imagen.');
   }
 
-  const { image } = req.file;
-  const imagenName = image.originalname;
+  const imagenName = req.file.originalname; // El nombre del archivo de la imagen
 
   const sql = 'INSERT INTO food (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
     if (err) {
       console.error('Error al insertar datos en la tabla food:', err);
-      res.status(500).send('Error al insertar datos en la tabla food');
-      return;
+      return res.status(500).send('Error al insertar datos en la tabla food');
     }
+
     res.status(201).send('Datos insertados correctamente');
   });
 });
+
 
 
 app.post("/sendDrink", upload, (req, res) => {
