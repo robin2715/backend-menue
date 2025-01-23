@@ -442,7 +442,7 @@ app.post("/sendFood", upload, (req, res) => {
 
   const imagenName = req.file.originalname; // El nombre del archivo de la imagen
 
-  const sql = 'INSERT INTO food (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
+  const sql = 'INSERT INTO food (name, kcal, ingredients, image) VALUES (?, ?, ?, ?)';
   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
     if (err) {
       console.error('Error al insertar datos en la tabla food:', err);
