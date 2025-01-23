@@ -11,10 +11,14 @@ const { table } = require("console");
 const multer = require("multer")
 const path = require("path")
 const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, "./public/images"));
+  },
   filename: (req, file, cb) => {
-    cb(null, file.originalname)
+    cb(null, file.originalname);
   }
-})
+});
+const upload = multer({ storage: storage }).single("image");
 let mesas = {};  
 const fs = require("node:fs")
 
@@ -428,7 +432,7 @@ app.get('/dessertGet', (req, res) => {
 
 // AÑADIR PRODUCTO AL MENU
 
-app.post("/sendFood", (req, res) => {
+app.post("/sendFood", upload, (req, res) => {
   const { name, kcal, ingredients } = req.body;
   
   if (!req.file) {
@@ -450,7 +454,7 @@ app.post("/sendFood", (req, res) => {
 });
 
 
-app.post("/sendDrink", (req, res) => {
+app.post("/sendDrink", upload, (req, res) => {
   const { name, kcal, ingredients} = req.body;
   const  {image} = req.file
    const imagenName = image.originalname
@@ -469,7 +473,7 @@ app.post("/sendDrink", (req, res) => {
 });
 
 
-app.post("/sendDessert", (req, res) => {
+app.post("/sendDessert", upload, (req, res) => {
   const { name, kcal, ingredients } = req.body;
   const  {image} = req.file
   const imagenName = image.originalname
