@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
   }
 });
-const upload = multer({ storage: storage }).single("image");
+const upload = multer({ storage: storage });
 let mesas = {};  
 const fs = require("node:fs")
 
@@ -435,7 +435,7 @@ app.get('/dessertGet', (req, res) => {
 });
 
 // AÑADIR PRODUCTO AL MENU
-app.post("/sendFood", upload, (req, res) => {
+app.post("/sendFood", upload.single("image"), (req, res) => {
   const { name, kcal, ingredients } = req.body;
   console.log('Archivo recibido:', req.file); // Aquí se imprimirá el archivo subido
   console.log('Datos del formulario:', req.body);
