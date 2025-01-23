@@ -22,7 +22,8 @@ const upload = multer({ storage: storage }).single("image");
 let mesas = {};  
 const fs = require("node:fs")
 
-app.use(multer({storage: storage, dest: path.join(__dirname, "./public/images")}).single("image"))
+app.use(express.urlencoded({ extended: true }));
+// app.use(multer({storage: storage, dest: path.join(__dirname, "./public/images")}).single("image"))
 app.use(express.json())
 app.options('*', (req, res) => {
   const allowedOrigins = ['https://robin2715.github.io/admin', 'https://robin2715.github.io'];
