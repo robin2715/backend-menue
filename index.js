@@ -429,11 +429,15 @@ app.get('/dessertGet', (req, res) => {
 // AÑADIR PRODUCTO AL MENU
 
 app.post("/sendFood", (req, res) => {
-  const { name, kcal, ingredients, } = req.body;
-  const  {image} = req.file
-   const imagenName = image.originalname
+  const { name, kcal, ingredients } = req.body;
+  
+  if (!req.file) {
+    return res.status(400).send('No se ha enviado ninguna imagen.');
+  }
 
-  // Asegúrate de que 'data' sea una cadena JSON válida.
+  const { image } = req.file;
+  const imagenName = image.originalname;
+
   const sql = 'INSERT INTO food (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
     if (err) {
@@ -441,7 +445,6 @@ app.post("/sendFood", (req, res) => {
       res.status(500).send('Error al insertar datos en la tabla food');
       return;
     }
-
     res.status(201).send('Datos insertados correctamente');
   });
 });
