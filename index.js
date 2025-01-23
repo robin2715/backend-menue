@@ -15,7 +15,7 @@ app.use(express.json())
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, './public/images');
+    const uploadPath = path.join(__dirname, './public/images/');
     console.log('Guardando archivo en:', uploadPath);  // Esto te ayudará a verificar la ruta
     cb(null, uploadPath);
   },
@@ -514,7 +514,7 @@ app.post("/sendFood", upload.single("image"), (req, res) => {
       return res.status(500).send('Error al insertar datos en la tabla food');
     }
 
-    res.status(201).send('Datos insertados correctamente');
+    res.status(201).json({ message: 'Datos insertados correctamente', filename: imagenName });;
   });
 });
 
