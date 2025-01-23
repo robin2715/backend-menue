@@ -15,7 +15,9 @@ app.use(express.json())
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "./public/images"));
+    const uploadPath = path.join(__dirname, './public/images');
+    console.log('Guardando archivo en:', uploadPath);  // Esto te ayudará a verificar la ruta
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
