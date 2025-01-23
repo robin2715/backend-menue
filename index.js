@@ -154,7 +154,7 @@ io.on("connection", (socket) => {
     socket.on('solicitar_mesero', (tableNumber) => {
       // io.to(tableNumber).emit('desactivar_boton_cliente');
       io.emit('solicitar_mesero', tableNumber);
-      console.log("EL CLIENTE DE LA MESA " + tableNumber + " SU BOTON DEBE ESTAR DESACTIVADO Y EN EL ADMIN DEBE ESTAR ACTIVADO")
+      // console.log("EL CLIENTE DE LA MESA " + tableNumber + " SU BOTON DEBE ESTAR DESACTIVADO Y EN EL ADMIN DEBE ESTAR ACTIVADO")
     
     });
 
@@ -366,7 +366,7 @@ app.get('/registroGet', (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
       return;
     }
-    console.log('Datos enviados al administrador');
+    // console.log('Datos enviados al administrador');
     res.status(200).json(result);
   });
 });
@@ -387,7 +387,7 @@ app.get('/foodGet', (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
       return;
     }
-    console.log('Carta de comida enviada al administrador');
+    // console.log('Carta de comida enviada al administrador');
     res.status(200).json(result);
   });
 });
@@ -404,7 +404,7 @@ app.get('/drinkGet', (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
       return;
     }
-    console.log('Carta de comida enviada al administrador');
+    // console.log('Carta de comida enviada al administrador');
     res.status(200).json(result);
   });
 });
@@ -421,7 +421,7 @@ app.get('/dessertGet', (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
       return;
     }
-    console.log('Carta de comida enviada al administrador');
+    // console.log('Carta de comida enviada al administrador');
     res.status(200).json(result);
   });
 });
