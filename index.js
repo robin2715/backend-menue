@@ -439,67 +439,6 @@ app.get('/dessertGet', (req, res) => {
   });
 });
 
-// AÑADIR PRODUCTO AL MENU
-// app.post("/sendFood", upload.single("image"), (req, res) => {
-//   const { name, kcal, ingredients } = req.body;
-//   console.log('Archivo recibido:', req.file); // Aquí se imprimirá el archivo subido
-//   console.log('Datos del formulario:', req.body);
-
-//   if (!req.file) {
-//     return res.status(400).send('No se ha enviado ninguna imagen.');
-//   }
-
-//   const imagenName = req.file.originalname; // El nombre del archivo de la imagen
-
-//   const sql = 'INSERT INTO food (name, kcal, ingredients, image) VALUES (?, ?, ?, ?)';
-//   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
-//     if (err) {
-//       console.error('Error al insertar datos en la tabla food:', err);
-//       return res.status(500).send('Error al insertar datos en la tabla food');
-//     }
-
-//     res.status(201).send('Datos insertados correctamente');
-//   });
-// });
-
-
-
-// app.post("/sendDrink", upload, (req, res) => {
-//   const { name, kcal, ingredients} = req.body;
-//   const  {image} = req.file
-//    const imagenName = image.originalname
-
-//   // Asegúrate de que 'data' sea una cadena JSON válida.
-//   const sql = 'INSERT INTO drink (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
-//   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
-//     if (err) {
-//       console.error('Error al insertar datos en la tabla drink:', err);
-//       res.status(500).send('Error al insertar datos en la tabla drink');
-//       return;
-//     }
-
-//     res.status(201).send('Datos insertados correctamente');
-//   });
-// });
-
-
-// app.post("/sendDessert", upload, (req, res) => {
-//   const { name, kcal, ingredients } = req.body;
-//   const  {image} = req.file
-//   const imagenName = image.originalname
-//   // Asegúrate de que 'data' sea una cadena JSON válida.
-//   const sql = 'INSERT INTO dessert (name, kcal, ingredients, imagenName) VALUES (?, ?, ?, ?)';
-//   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
-//     if (err) {
-//       console.error('Error al insertar datos en la tabla dessert:', err);
-//       res.status(500).send('Error al insertar datos en la tabla dessert');
-//       return;
-//     }
-
-//     res.status(201).send('Datos insertados correctamente');
-//   });
-// });
-
 // Este es el código corregido:
 app.post("/sendFood", upload.single("image"), (req, res) => {
   const { name, kcal, ingredients } = req.body;
@@ -525,45 +464,136 @@ app.post("/sendFood", upload.single("image"), (req, res) => {
 
 app.post("/sendDrink", upload.single("image"), (req, res) => {
   const { name, kcal, ingredients } = req.body;
-  console.log('Archivo recibido:', req.file);
+  console.log('Archivo recibido:', req.file); // Aquí se imprimirá el archivo subido
+  console.log('Datos del formulario:', req.body);
 
   if (!req.file) {
     return res.status(400).send('No se ha enviado ninguna imagen.');
   }
 
-  const imagenName = req.file.originalname; // El nombre del archivo
+  const imagenName = req.file.originalname; // El nombre del archivo de la imagen
 
   const sql = 'INSERT INTO drink (name, kcal, ingredients, image) VALUES (?, ?, ?, ?)';
   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
     if (err) {
-      console.error('Error al insertar datos en la tabla drink:', err);
-      return res.status(500).send('Error al insertar datos en la tabla drink');
+      console.error('Error al insertar datos en la tabla food:', err);
+      return res.status(500).send('Error al insertar datos en la tabla food');
     }
 
-    res.status(201).send('Datos insertados correctamente');
+    res.status(201).json({ message: 'Datos insertados correctamente', filename: imagenName });;
   });
 });
 
 app.post("/sendDessert", upload.single("image"), (req, res) => {
   const { name, kcal, ingredients } = req.body;
-  console.log('Archivo recibido:', req.file);
+  console.log('Archivo recibido:', req.file); // Aquí se imprimirá el archivo subido
+  console.log('Datos del formulario:', req.body);
 
   if (!req.file) {
     return res.status(400).send('No se ha enviado ninguna imagen.');
   }
 
-  const imagenName = req.file.originalname; // El nombre del archivo
+  const imagenName = req.file.originalname; // El nombre del archivo de la imagen
 
   const sql = 'INSERT INTO dessert (name, kcal, ingredients, image) VALUES (?, ?, ?, ?)';
   connection.query(sql, [name, kcal, ingredients, imagenName], (err, result) => {
     if (err) {
-      console.error('Error al insertar datos en la tabla dessert:', err);
-      return res.status(500).send('Error al insertar datos en la tabla dessert');
+      console.error('Error al insertar datos en la tabla food:', err);
+      return res.status(500).send('Error al insertar datos en la tabla food');
     }
 
-    res.status(201).send('Datos insertados correctamente');
+    res.status(201).json({ message: 'Datos insertados correctamente', filename: imagenName });;
   });
 });
+
+
+
+app.delete("/foodDelete", (req, res) => {
+  // Asegurarse de que el id esté en el cuerpo de la solicitud
+  const dateId = req.body.id; 
+  
+  if (!dateId) {
+    return res.status(400).json({ error: "ID no proporcionado" });
+  }
+
+  // Consulta SQL para eliminar el registro con el id proporcionado en la tabla 'pedidos'
+  const sql = 'DELETE FROM food WHERE id = ?';
+
+  connection.query(sql, [dateId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el registro', err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+    
+    // Si no se encontró ningún registro con ese ID, devolver un mensaje
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'No se encontró el registro con ese ID' });
+    }
+
+    console.log('Registro eliminado');
+    res.status(200).json({ message: 'Registro eliminado correctamente', result });
+  });
+});
+
+
+
+app.delete("/drinkDelete", (req, res) => {
+  // Asegurarse de que el id esté en el cuerpo de la solicitud
+  const dateId = req.body.id; 
+  
+  if (!dateId) {
+    return res.status(400).json({ error: "ID no proporcionado" });
+  }
+
+  // Consulta SQL para eliminar el registro con el id proporcionado en la tabla 'pedidos'
+  const sql = 'DELETE FROM drink WHERE id = ?';
+
+  connection.query(sql, [dateId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el registro', err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+    
+    // Si no se encontró ningún registro con ese ID, devolver un mensaje
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'No se encontró el registro con ese ID' });
+    }
+
+    console.log('Registro eliminado');
+    res.status(200).json({ message: 'Registro eliminado correctamente', result });
+  });
+});
+
+
+
+app.delete("/dessertDelete", (req, res) => {
+  // Asegurarse de que el id esté en el cuerpo de la solicitud
+  const dateId = req.body.id; 
+  
+  if (!dateId) {
+    return res.status(400).json({ error: "ID no proporcionado" });
+  }
+
+  // Consulta SQL para eliminar el registro con el id proporcionado en la tabla 'pedidos'
+  const sql = 'DELETE FROM dessert WHERE id = ?';
+
+  connection.query(sql, [dateId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el registro', err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+    
+    // Si no se encontró ningún registro con ese ID, devolver un mensaje
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'No se encontró el registro con ese ID' });
+    }
+
+    console.log('Registro eliminado');
+    res.status(200).json({ message: 'Registro eliminado correctamente', result });
+  });
+});
+
+
 
 
 
