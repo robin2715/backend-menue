@@ -124,6 +124,10 @@ io.on("connection", (socket) => {
     io.emit('nuevoMensaje', mensaje);
   });
 
+  socket.on("newFetch", () => {
+    io.emit("doNewFetch")
+  })
+
     socket.on('unirse_mesa', (tableNumber) => {
       socket.tableNumber = tableNumber
       mesasConectadas.set(socket.id, tableNumber);
