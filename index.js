@@ -596,6 +596,57 @@ app.delete("/dessertDelete", (req, res) => {
 });
 
 
+// LOGO
+
+
+app.put("/changeLogo", upload.single("image"), (req, res) => {
+
+
+  if (!req.file) {
+    return res.status(400).send('No se ha enviado ninguna imagen.');
+  }
+
+  const imagenName = req.file.originalname; // El nombre del archivo de la imagen
+
+  // Primero, eliminamos el registro anterior
+  const deleteSql = 'DELETE FROM logo WHERE 1';
+  connection.query(deleteSql, (err) => {
+    if (err) {
+      console.error('Error al eliminar el registro anterior:', err);
+      return res.status(500).send('Error al eliminar el registro anterior');
+    }
+
+    // Luego, insertamos el nuevo archivo
+    const insertSql = 'INSERT INTO logo (logo) VALUES (?)';
+    connection.query(insertSql, [imagenName], (err, result) => {
+      if (err) {
+        console.error('Error al insertar datos en la tabla logo:', err);
+        return res.status(500).send('Error al insertar datos en la tabla logo');
+      }
+
+      res.status(201).json({ message: 'Logo actualizado correctamente', filename: imagenName });
+    });
+  });
+});
+
+app.get("/getLogo", (req, res) => {
+  const sql = "SELECT * FROM logo";
+
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log("Error al enviar el logo: " + err);
+      return res.status(500).send("Error al enviar el logo");
+    }
+
+    if (result.length > 0) {
+      console.log("Logo enviado exitosamente");
+      return res.status(200).json(result); // Enviamos los datos del logo
+    } else {
+      console.log("No se encontró un logo.");
+      return res.status(404).send("No se encontró un logo.");
+    }
+  });
+});
 
 
 
