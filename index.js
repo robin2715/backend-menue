@@ -677,7 +677,48 @@ app.put("/changeSound", upload.single("sound"), (req, res) => {
   });
 });
 
+app.get("/getSound", (req, res) => {
+  const sql = "SELECT * FROM sound WHERE 1";
 
+  connection.query(sql, (err, result) => {
+    if (err) {
+      console.log("Error al enviar el logo: " + err);
+      return res.status(500).send("Error al enviar el logo");
+    }
+
+    if (result.length > 0) {
+      console.log("Logo enviado exitosamente");
+      return res.status(200).json(result); // Enviamos los datos del logo
+    } else {
+      console.log("No se encontró un logo.");
+      return res.status(404).send("No se encontró un logo.");
+    }
+  });
+});
+
+app.put("/changeStateEffectSounds", (req, res) => {
+  const { data } = req.body;
+
+  // Primero, eliminamos el registro anterior
+  const deleteSql = 'DELETE FROM stateSound WHERE 1';
+  connection.query(deleteSql, (err) => {
+    if (err) {
+      console.error('Error al eliminar el registro anterior:', err);
+      return res.status(500).send('Error al eliminar el registro anterior');
+    }
+
+    // Luego, insertamos el nuevo estado
+    const insertSql = 'INSERT INTO stateSound (sound) VALUES (?)';
+    connection.query(insertSql, [data], (err, result) => {
+      if (err) {
+        console.error('Error al insertar datos en la tabla stateSound:', err);
+        return res.status(500).send('Error al insertar datos en la tabla stateSound');
+      }
+
+      res.status(201).json({ message: 'Estado actualizado correctamente' });
+    });
+  });
+});
 
 // socket.on('unirse_mesa', (tableNumber) => {
 //   socket.join(tableNumber);  // Unir el socket al room de la mesa
